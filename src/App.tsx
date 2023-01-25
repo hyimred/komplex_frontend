@@ -10,13 +10,15 @@ interface State {
   regNev: string;
   regMeret: string;
   regAr: string;
+  regType: string
 }
 
 interface Storage {
   id: number
-  nev: string;
-  meret: number;
-  ar: number
+  name: string;
+  size: number;
+  price: number;
+  type: string
 }
 
 interface StorageListResponse {
@@ -32,6 +34,7 @@ class App extends Component<{}, State> {
       regNev: '',
       regMeret: '',
       regAr: '',
+      regType: '',
       Storages: [],
     }
   }
@@ -51,16 +54,17 @@ class App extends Component<{}, State> {
 
   handleNew = async () => {
 
-    const { regNev, regMeret, regAr } = this.state;
+    const { regNev, regMeret, regAr, regType } = this.state;
     if (regNev.trim() === '') {
       // this.setState() -tel hibaüzenet megjelenítése
       return;
     }
 
     const adat = {
-      nev: regNev,
-      meret: regMeret,
-      ar: regAr
+      name: regNev,
+      size: regMeret,
+      price: regAr,
+      type: regType
     };
 
     let response = await fetch('http://localhost:3000/api/tarhely', {
@@ -75,6 +79,7 @@ class App extends Component<{}, State> {
       regNev: '',
       regMeret: '',
       regAr: '',
+      regType: '',
     })
 
     await this.loadStorage();
@@ -90,15 +95,16 @@ class App extends Component<{}, State> {
   };
 
   render() {
-    const { regNev, regMeret, regAr } = this.state;
+    const { regNev, regMeret, regAr, regType } = this.state;
 
     return <div className='container'>
       <h2>Tárhelyek</h2>
       <div className="row d-flex flex-row m-2">
       {this.state.Storages.map(Storage => <div className="col-md-4 col-sm-12 bg-primary p-2 text-center border border-dark">
-                                              <h4 className="text-white">{Storage.nev}</h4>
-                                              <p className="text-white">{Storage.meret}GB</p>
-                                              <p className="text-white">{Storage.ar}Ft</p>
+                                              <h4 className="text-white">{Storage.name}</h4>
+                                              <p className="text-white">{Storage.size}GB</p>
+                                              <p className="text-white">{Storage.price}Ft</p>
+                                              <p className="text-white">{Storage.type}</p>
                                               <button className='btn btn-danger btn-sm' onClick={() => this.handleDelete(Storage.id)}>Törlés</button>
                                           </div>)}  
       </div>
@@ -126,6 +132,13 @@ class App extends Component<{}, State> {
             <span className="input-group-text">Tárhely ára:</span>
           </div>
           <input type="text" className="form-control" value={regAr} onChange={e => this.setState({ regAr: e.currentTarget.value })}></input>
+        </div>
+
+        <div className="input-group mb-3">
+          <div className="input-group-prepend">
+            <span className="input-group-text">Tárhely tipusa:</span>
+          </div>
+          <input type="text" className="form-control" value={regType} onChange={e => this.setState({ regType: e.currentTarget.value })}></input>
         </div>
 
         <button className='btn btn-outline-primary' onClick={this.handleNew}>Új Tárhely</button>
